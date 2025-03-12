@@ -49,7 +49,12 @@ namespace OWASP.WebGoat.NET
         {
             users = new List<XmlUser>();
             XmlDocument doc = new XmlDocument();
-            doc.Load(Server.MapPath("/App_Data/XmlInjectionUsers.xml"));
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.ProhibitDtd = true;
+            using (XmlReader reader = XmlReader.Create(Server.MapPath("/App_Data/XmlInjectionUsers.xml"), settings))
+            {
+                doc.Load(reader);
+            }
             foreach (XmlNode node in doc.ChildNodes[1].ChildNodes)
             {
                 if (node.Name == "user")
