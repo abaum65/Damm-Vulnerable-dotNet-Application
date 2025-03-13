@@ -45,6 +45,8 @@ namespace OWASP.WebGoat.NET
 		
 		public void RunSQLFromFile (SqliteConnection cn, String filename)
 		{
+			if (filename == null || filename.Contains("../") || filename.Contains(@"..\"))
+				throw new ArgumentException("Invalid file path");
 			using (FileStream fs = new FileStream(filename, FileMode.Open)) {
 				using (StreamReader sr = new StreamReader(fs, Encoding.UTF8)) {
 					String line = String.Empty;
