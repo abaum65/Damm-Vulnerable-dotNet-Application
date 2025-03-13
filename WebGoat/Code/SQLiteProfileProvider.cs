@@ -380,7 +380,7 @@ namespace TechInfoSystems.Data.SQLite
 				using (SqliteCommand cmd = cn.CreateCommand()) {
 					cmd.CommandText = "DELETE FROM " + PROFILE_TB_NAME + " WHERE UserId IN (SELECT UserId FROM " + USER_TB_NAME
 														+ " WHERE ApplicationId = $ApplicationId AND LastActivityDate <= $LastActivityDate"
-														+ GetClauseForAuthenticationOptions (authenticationOption) + ")";
+														+ " AND IsAnonymous = $IsAnonymous)";
 
 					cmd.Parameters.AddWithValue ("$ApplicationId", _membershipApplicationId);
 					cmd.Parameters.AddWithValue ("$LastActivityDate", userInactiveSinceDate);
@@ -410,7 +410,7 @@ namespace TechInfoSystems.Data.SQLite
 			try {
 				using (SqliteCommand cmd = cn.CreateCommand()) {
 					cmd.CommandText = "SELECT COUNT(*) FROM " + USER_TB_NAME + " u, " + PROFILE_TB_NAME + " p " +
-														"WHERE u.ApplicationId = $ApplicationId AND u.LastActivityDate <= $LastActivityDate AND u.UserId = p.UserId" + GetClauseForAuthenticationOptions (authenticationOption);
+														"WHERE u.ApplicationId = $ApplicationId AND u.LastActivityDate <= $LastActivityDate AND u.UserId = p.UserId AND IsAnonymous = $IsAnonymous";
 
 					if (cn.State == ConnectionState.Closed)
 						cn.Open ();
@@ -524,7 +524,7 @@ namespace TechInfoSystems.Data.SQLite
 		{
 			string sqlQuery = "SELECT u.UserName, u.IsAnonymous, u.LastActivityDate, p.LastUpdatedDate, length(p.PropertyNames) + length(p.PropertyValuesString) FROM "
 												+ USER_TB_NAME + " u, " + PROFILE_TB_NAME + " p WHERE u.ApplicationId = $ApplicationId AND u.UserId = p.UserId AND u.UserName LIKE $UserName AND u.LastActivityDate <= $LastActivityDate"
-												+ GetClauseForAuthenticationOptions (authenticationOption);
+												+ " AND IsAnonymous = $IsAnonymous";
 
 			SqliteParameter prm1 = new SqliteParameter ("$ApplicationId", DbType.String, 256);
 			prm1.Value = _membershipApplicationId;
