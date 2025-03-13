@@ -50,6 +50,8 @@ namespace OWASP.WebGoat.NET
     	{
 	        try
 	        {
+	            if (_fullPath == null || _fullPath.Contains("../") || _fullPath.Contains(@"..\"))
+	                return false;
 	            FileStream myFile =	new FileStream(_fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 	            BinaryReader br = new BinaryReader(myFile);
 	            try
